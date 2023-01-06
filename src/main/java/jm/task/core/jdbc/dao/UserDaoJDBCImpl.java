@@ -14,14 +14,12 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS USERS" +
-                "(ID INT AUTO_INCREMENT PRIMARY KEY, NAME VARCHAR(50), LASTNAME VARCHAR(50), AGE TINYINT)";
-
         try (Connection conn = Util.getConnection(); Statement statement = conn.createStatement()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
-            statement.executeUpdate(sql);
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS USERS" +
+                    "(ID INT AUTO_INCREMENT PRIMARY KEY, NAME VARCHAR(50), LASTNAME VARCHAR(50), AGE TINYINT)");
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,13 +27,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() throws SQLException {
-        String sql = "DROP TABLE IF EXISTS USERS";
-
         try (Connection conn = Util.getConnection(); Statement statement = conn.createStatement()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
-            statement.executeUpdate(sql);
+            statement.executeUpdate("DROP TABLE IF EXISTS USERS");
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,9 +39,9 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
-        String sql = "INSERT INTO USERS(NAME, LASTNAME, AGE) VALUES (?, ?, ?)";
-
-        try (Connection conn = Util.getConnection(); PreparedStatement pS = conn.prepareStatement(sql)) {
+        try (Connection conn = Util.getConnection();
+             PreparedStatement pS = conn.prepareStatement("INSERT INTO USERS(NAME, LASTNAME, AGE)" +
+                     " VALUES (?, ?, ?)")) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
@@ -61,9 +57,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) throws SQLException {
-        String sql = "DELETE FROM USERS WHERE ID=?";
-
-        try (Connection conn = Util.getConnection(); PreparedStatement pS = conn.prepareStatement(sql)) {
+        try (Connection conn = Util.getConnection(); PreparedStatement pS = conn.prepareStatement("DELETE FROM USERS WHERE ID=?")) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
@@ -77,11 +71,10 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() throws SQLException {
-        String sql = "SELECT ID, NAME, LASTNAME, AGE FROM USERS";
         List<User> users = new ArrayList<>();
 
         try (Connection conn = Util.getConnection(); Statement statement = conn.createStatement();
-                ResultSet rS = statement.executeQuery(sql)) {
+                ResultSet rS = statement.executeQuery("SELECT ID, NAME, LASTNAME, AGE FROM USERS")) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
@@ -104,13 +97,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() throws SQLException {
-        String sql = "TRUNCATE USERS";
-
         try (Connection conn = Util.getConnection(); Statement statement = conn.createStatement()) {
             conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
             conn.setAutoCommit(false);
 
-            statement.executeUpdate(sql);
+            statement.executeUpdate("TRUNCATE USERS");
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
